@@ -1,65 +1,35 @@
-body {
-  margin: 0;
-  background-color: #3b4cca;
-}
-
 #pokeContainer {
   display: flex;
   flex-wrap: wrap;
-  margin: 0 auto;
   justify-content: center;
-  max-width: 1440px;
-}
-
-.card img {
-  height: 128px;
-  width: 128px;
-  padding-top: 16px;
+  padding: 10px;
 }
 
 .card {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  width: 140px;
+  margin: 5px;
+  padding: 5px;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 }
 
-#btnContainer {
-  display: flex;
-  justify-content: center;
-  padding-top: 32px;
-}
-.card p {
-  font-size: 12px;
-}
-.spinner-wrapper {
+#loadingSpinner {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  background: rgba(255, 255, 255, 0.6);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
   z-index: 9999;
 }
 
-.pokeball-spinner {
+#loadingSpinner img {
   width: 50px;
   height: 50px;
-
   animation: spin 1s linear infinite;
-  margin: 50px auto;
 }
 
 @keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
