@@ -1,19 +1,45 @@
 <!DOCTYPE html>
 <html lang="de">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pokédex MVP</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokédex</title>
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="contentContainer" id="contentContainer">
+  <div class="search-container">
+    <input type="text" id="searchInput" onkeyup="filterPokemon()" placeholder="Pokémon suchen (z.B. Pikachu)..." class="form-control">
+    
+  </div>
+ <div class="contentContainer" id="contentContainer">
+    <div id="pokeContainer">
+        </div>
 
-<div id="loadingSpinner">
-  <img src="pokeball.png" alt="Loading...">
+    <div class="button-container">
+        <button onclick="loadMorePokemon()" class="btn btn-primary">
+            Load 20 more
+        </button>
+    </div>
 </div>
+    <div id="detail-modal-overlay" class="detail-modal-overlay" onclick="handleOverlayClick(event)">
+      <div class="detail-modal" role="dialog" aria-modal="true" id="detail-modal">
+        <div class="modal-header">
+          <strong id="detail-title">Details</strong>
+          <button class="close-btn" onclick="closeDetails()">✕</button>
+        </div>
+        <div class="modal-body" id="detail-body">
+          
+        </div>
+      </div>
+    </div>
 
-<div id="pokeContainer"></div>
+    <div id="loadingSpinner">
+      <img src="./assets/png/pokeball.png" alt="Loading..." />
+    </div>
 
-<script src="script.js"></script>
-</body>
+    <script src="template.js"></script>
+    <script src="script.js"></script>
+  </body>
 </html>
