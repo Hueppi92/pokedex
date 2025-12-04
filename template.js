@@ -52,28 +52,21 @@ function getPokemonCardTemplate(p) {
   `;
 }
 
-function getModalContentTemplate(
-  p,
-  genus,
-  height,
-  weight,
-  img,
-  statsList,
-  attackList,
-  abilitiesList
-) {
+function getModalContentTemplate(data) {
+   const p = data.p; 
   const speciesUrl = p.species?.url || "";
+
   return `
     <div style="display:flex;gap:12px; align-items:center;">
-      <img src="${img}" alt="${
+      <img src="${data.img}" alt="${
     p.name
   }" style="width:120px;height:120px;object-fit:contain;flex-shrink:0;">
       <div>
         <h3 style="margin:0 0 6px 0">#${p.id} ${capitalize(p.name)}</h3>
         <p style="margin:4px 0"><strong>Genus:</strong> ${
-          genus || "Unknown"
+          data.genus || "Unknown"
         }</p>
-        <p style="margin:4px 0"><strong>Height:</strong> ${height} &nbsp; <strong>Weight:</strong> ${weight}</p>
+        <p style="margin:4px 0"><strong>Height:</strong> ${data.height} &nbsp; <strong>Weight:</strong> ${data.weight}</p>
       </div>
     </div>
     <div class="card-tabs" style="margin-top:20px;">
@@ -100,16 +93,16 @@ function getModalContentTemplate(
       <div class="tab-content">
         <div id="tab-stats-${
           p.id
-        }" class="tab-pane active"><hr><ul>${statsList}</ul></div>
+        }" class="tab-pane active"><hr><ul>${data.statsList}</ul></div>
         <div id="tab-desc-${
           p.id
         }" class="tab-pane" data-loaded="false" data-species-url="${speciesUrl}"><hr><div class="desc-placeholder">Click to load description.</div></div>
         <div id="tab-attack-${
           p.id
-        }" class="tab-pane"><hr><ul>${attackList}</ul></div>
+        }" class="tab-pane"><hr><ul>${data.attackList}</ul></div>
           <div id="tab-abilities-${
           p.id
-        }" class="tab-pane"><hr><ul>${abilitiesList}</ul></div>
+        }" class="tab-pane"><hr><ul>${data.abilitiesList}</ul></div>
       </div>
     </div>
     <div style="margin-top:20px; text-align:right;">

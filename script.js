@@ -6,10 +6,15 @@ let pokemons = [];
 let limit = 20;
 let offset = 0;
 
+
+
+   
 async function fetchPokemonDetails(entryUrl) {
   const detailRes = await fetch(entryUrl);
   return await detailRes.json();
 }
+
+
 
 async function fetchSpeciesData(speciesUrl) {
   if (!speciesUrl) return null;
@@ -33,8 +38,7 @@ async function loadPokemon() {
   const response = await fetch(`${BASE_URL}?limit=${limit}&offset=${offset}`);
   if (!response.ok) {
     hideLoadingSpinner();
-    throw new Error("Network response was not ok: " + response.statusText);
-  }
+    throw new Error("Network response was not ok: " + response.statusText);  }
   const json = await response.json();
   for (let entry of json.results) {
     const detailData = await fetchPokemonDetails(entry.url);
@@ -58,21 +62,15 @@ function renderPokemon(list = pokemons) {
 }
 
 function showTab(uid, tabName) {
-  // NEU: 'abilities' zum Array hinzufügen, damit die Funktion diesen Tab steuern kann
   const btns = ["stats", "desc", "attack", "abilities"]; 
-  
-  btns.forEach((b) => {
+   btns.forEach((b) => {
     const btn = document.getElementById(`tab-btn-${b}-${uid}`);
     const pane = document.getElementById(`tab-${b}-${uid}`);
     if (!btn || !pane) return;
-
     const isActive = b === tabName;
-    
-    // Setzt 'active' für den geklickten Tab und entfernt 'active' von den anderen
     btn.classList.toggle("active", isActive);
     pane.classList.toggle("active", isActive);
   });
-
   if (tabName === "desc") {
     lazyLoadDescription(uid);
   }
@@ -98,9 +96,7 @@ async function loadDescription(uid, speciesUrl) {
     const speciesData = await fetchSpeciesData(speciesUrl);
     let descriptionText = "No description found.";
     if (speciesData && speciesData.flavor_text_entries) {
-      const en = speciesData.flavor_text_entries.find(
-        (e) => e.language.name === "en"
-      );
+      const en = speciesData.flavor_text_entries.find((e) => e.language.name === "en");
       const entry = en || speciesData.flavor_text_entries[0];
       if (entry) descriptionText = entry.flavor_text.replace(/[\n\f]/g, " ");
     }
@@ -116,10 +112,10 @@ async function openDetails(uid) {
   const overlay = document.getElementById("detail-modal-overlay");
   const body = document.getElementById("detail-body");
   overlay.classList.add("show");
-  showLoadingSpinner;
+  showLoadingSpinner();
   await loadDetailsForModal(uid);
   showTab(uid, "stats");
-  hideLoadingSpinner;
+  hideLoadingSpinner();
 }
 
 function closeDetails() {
@@ -141,7 +137,6 @@ function extractPokemonInfo(p, species) {
     p.sprites.front_default ||
     "";
   let genus = "";
-
   if (species && species.genera) {
     const en = species.genera.find((g) => g.language.name === "en");
     genus = (en || species.genera[0])?.genus || "";
@@ -151,40 +146,13 @@ function extractPokemonInfo(p, species) {
 
 async function loadDetailsForModal(uid) {
   const body = document.getElementById("detail-body");
-  let p = pokemons.find((x) => x.id === uid);
-  if (!p) {
-    const detailUrl = `${BASE_URL}${uid}/`;
-    p = await fetchPokemonDetails(detailUrl);
-  }
-  if (!body || !p)
-    return (body.innerHTML = "<p>Pokemon Daten nicht gefunden.</p>");
-
+  let p = pokemons.find(x => x.id === uid);
+    if (!p) {p = await fetchPokemonDetails(`${BASE_URL}${uid}/`);}
+    if (!body || !p) {return body.innerHTML = "<p>Pokemon Daten nicht gefunden.</p>";}
   try {
-    const species = await fetchSpeciesData(p.species?.url);
-    const { height, weight, img, genus } = extractPokemonInfo(p, species);
-    const statsList = p.stats
-      .map((s) => `<li>${capitalize(s.stat.name)}: ${s.base_stat}</li>`)
-      .join("");
-    const attackList = p.moves
-      .slice(0, 6)
-      .map((m) => `<li>${capitalize(m.move.name)}</li>`)
-      .join("");
-      const abilitiesList = p.abilities
-  .map(a => `<li>${capitalize(a.ability.name)} ${a.is_hidden ? '(Hidden)' : ''}</li>`)
-  .join("");
-    body.innerHTML = getModalContentTemplate(
-      p,
-      genus,
-      height,
-      weight,
-      img,
-      statsList,
-      attackList,
-      abilitiesList
-    );
-    document.getElementById(
-      "detail-title"
-    ).textContent = `Details for ${p.name}`;
+    const data = await preparePokemonData(p);
+    body.innerHTML = getModalContentTemplate(data);
+    document.getElementById("detail-title").textContent = `Details for ${p.name}`;
   } catch (err) {
     console.error(err);
     body.innerHTML = "<p>Fehler beim Laden der Details.</p>";
@@ -215,11 +183,7 @@ async function filterPokemon() {
     return;
   } 
   toggleLoadMoreButton(false);  
-  const filteredEntries = allPokemonCache.filter(
-    (p) =>
-      p.name.includes(searchTerm) ||
-      String(getTempId(p.url)).startsWith(searchTerm)
-  );  
+  const filteredEntries = allPokemonCache.filter((p) =>p.name.includes(searchTerm) || String(getTempId(p.url)).startsWith(searchTerm));  
   await renderSearchResults(filteredEntries.slice(0, 10));
 }
 
@@ -249,6 +213,17 @@ function toggleLoadMoreButton(show) {
   if (buttonContainer) {
     buttonContainer.style.display = show ? "flex" : "none";
   }
+}
+
+async function preparePokemonData(p) {
+  const species = await fetchSpeciesData(p.species?.url);
+  const { height, weight, img, genus } = extractPokemonInfo(p, species);
+  const statsList = p.stats.map(s => `<li>${capitalize(s.stat.name)}: ${s.base_stat}</li>`).join("");
+  const attackList = p.moves.slice(0, 6).map(m => `<li>${capitalize(m.move.name)}</li>`).join("");
+  const abilitiesList = p.abilities.map(a => `<li>${capitalize(a.ability.name)} ${a.is_hidden ? '(Hidden)' : ''}</li>`).join("");
+  return {
+    p, genus, height, weight, img, statsList, attackList, abilitiesList
+  };
 }
 
 initAllPokemon();
