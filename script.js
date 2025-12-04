@@ -207,20 +207,19 @@ function hideLoadingSpinner() {
 
 async function filterPokemon() {
   const searchInput = document.getElementById("searchInput");
-  const searchTerm = searchInput.value.toLowerCase();
+  const searchTerm = searchInput.value.toLowerCase(); 
   if (searchTerm.length < 3) {
+    offset = 0; 
     pokemons = [];
-    loadPokemon();
-    renderPokemon(pokemons);
-    toggleLoadMoreButton(true);
+    loadPokemon(); 
     return;
-  }
-  toggleLoadMoreButton(false);
+  } 
+  toggleLoadMoreButton(false);  
   const filteredEntries = allPokemonCache.filter(
     (p) =>
       p.name.includes(searchTerm) ||
       String(getTempId(p.url)).startsWith(searchTerm)
-  );
+  );  
   await renderSearchResults(filteredEntries.slice(0, 10));
 }
 
