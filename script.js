@@ -58,12 +58,17 @@ function renderPokemon(list = pokemons) {
 }
 
 function showTab(uid, tabName) {
-  const btns = ["stats", "desc", "attack"];
+  // NEU: 'abilities' zum Array hinzufügen, damit die Funktion diesen Tab steuern kann
+  const btns = ["stats", "desc", "attack", "abilities"]; 
+  
   btns.forEach((b) => {
     const btn = document.getElementById(`tab-btn-${b}-${uid}`);
     const pane = document.getElementById(`tab-${b}-${uid}`);
     if (!btn || !pane) return;
+
     const isActive = b === tabName;
+    
+    // Setzt 'active' für den geklickten Tab und entfernt 'active' von den anderen
     btn.classList.toggle("active", isActive);
     pane.classList.toggle("active", isActive);
   });
@@ -72,7 +77,6 @@ function showTab(uid, tabName) {
     lazyLoadDescription(uid);
   }
 }
-
 function lazyLoadDescription(uid) {
   const descPane = document.getElementById(`tab-desc-${uid}`);
   if (!descPane) return;
@@ -165,6 +169,9 @@ async function loadDetailsForModal(uid) {
       .slice(0, 6)
       .map((m) => `<li>${capitalize(m.move.name)}</li>`)
       .join("");
+      const abilitiesList = p.abilities
+  .map(a => `<li>${capitalize(a.ability.name)} ${a.is_hidden ? '(Hidden)' : ''}</li>`)
+  .join("");
     body.innerHTML = getModalContentTemplate(
       p,
       genus,
@@ -172,7 +179,8 @@ async function loadDetailsForModal(uid) {
       weight,
       img,
       statsList,
-      attackList
+      attackList,
+      abilitiesList
     );
     document.getElementById(
       "detail-title"

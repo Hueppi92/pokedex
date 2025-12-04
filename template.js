@@ -59,7 +59,8 @@ function getModalContentTemplate(
   weight,
   img,
   statsList,
-  attackList
+  attackList,
+  abilitiesList
 ) {
   const speciesUrl = p.species?.url || "";
   return `
@@ -90,6 +91,11 @@ function getModalContentTemplate(
         }" onclick="event.preventDefault(); showTab(${
     p.id
   }, 'attack')">Attack</a>
+   <a href="#" class="tablink" id="tab-btn-abilities-${
+          p.id
+        }" onclick="event.preventDefault(); showTab(${
+    p.id
+  }, 'abilities')">Abilities</a>
       </nav>
       <div class="tab-content">
         <div id="tab-stats-${
@@ -101,6 +107,9 @@ function getModalContentTemplate(
         <div id="tab-attack-${
           p.id
         }" class="tab-pane"><hr><ul>${attackList}</ul></div>
+          <div id="tab-abilities-${
+          p.id
+        }" class="tab-pane"><hr><ul>${abilitiesList}</ul></div>
       </div>
     </div>
     <div style="margin-top:20px; text-align:right;">
